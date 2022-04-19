@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MoveDictionary {
 	/*
@@ -16,6 +17,7 @@ public class MoveDictionary {
 	
 	public void addMove(Move move) {
 		this.movelist.add(move);
+		
 	}
 	
 	public void win(Move move) {
@@ -46,6 +48,18 @@ public class MoveDictionary {
 	}
 	
 	public Move randomMove() {
+		int sum = 0;
+		for(Move m:movelist) {
+			sum +=m.getProbability();
+		}
+		
+		Random ran = new Random();
+		int i = ran.nextInt(sum+1);
+		for(Move m:movelist) {
+			if(i<=m.getProbability()) return m;
+			else i -= m.getProbability();
+		}
+		
 		return null;
 	}
 

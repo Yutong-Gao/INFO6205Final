@@ -1,10 +1,9 @@
 package Model;
 
-import java.util.ArrayList;
 
 public class Move {
-	String name;
-	int probability;
+	private String name;
+	private int  probability;
 	
 	
 	public Move(String name, int probability) {
