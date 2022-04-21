@@ -2,22 +2,22 @@ package Model;
 
 
 public class Move {
-	private String name;
+	private int name;
 	private int  probability;
 	
 	
-	public Move(String name, int probability) {
+	public Move(int name, int probability) {
 		this.name = name;
 		this.probability = probability;
 	}
 
 
-	public String getName() {
+	public int getName() {
 		return name;
 	}
 
 
-	public void setName(String name) {
+	public void setName(int name) {
 		this.name = name;
 	}
 
@@ -29,6 +29,12 @@ public class Move {
 
 	public void setProbability(int probability) {
 		this.probability = probability;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Move [name=" + name + "]";
 	}
 
 
