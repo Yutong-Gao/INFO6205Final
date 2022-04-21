@@ -1,22 +1,26 @@
-import javax.swing.*;
+package UI;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.*;
+
+
 class Inter extends JFrame implements ActionListener
 {
-    //开局选择界面
-    JButton pvc;//两种模式选择
+    //å¼€å±€é€‰æ‹©ç•Œé�¢
+    JButton pvc;//ä¸¤ç§�æ¨¡å¼�é€‰æ‹©
     JButton pvp;
-    JPanel area;//选择区域
+    JPanel area;//é€‰æ‹©åŒºåŸŸ
     JLabel title;
     JFrame frame;
 
     Inter()
-    {//界面生成
+    {//ç•Œé�¢ç”Ÿæˆ�
         frame=new JFrame();
         frame.setTitle("Menace Game");
-        frame.setBounds(500,500,150,120);//窗体基本设置
+        frame.setBounds(500,500,150,120);//çª—ä½“åŸºæœ¬è®¾ç½®
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -34,8 +38,8 @@ class Inter extends JFrame implements ActionListener
         pvp.addActionListener(this);
         frame.add(area);
 
-        frame.setVisible(true);//设置可视化
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//使关闭键有用
+        frame.setVisible(true);//è®¾ç½®å�¯è§†åŒ–
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//ä½¿å…³é—­é”®æœ‰ç”¨
 
     }
 
@@ -43,14 +47,14 @@ class Inter extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent e) {
         JButton buttonSource=(JButton)e.getSource();
         if(buttonSource==pvp){
-            //判断是否使pvp键，如果是，进入pvp模式
+            //åˆ¤æ–­æ˜¯å�¦ä½¿pvpé”®ï¼Œå¦‚æžœæ˜¯ï¼Œè¿›å…¥pvpæ¨¡å¼�
             frame.setVisible(false);
             MyOXGame myoxgame=new MyOXGame();
         }
         if(buttonSource==pvc){
-            //判断是否使pvc键，如果是，进入pvc模式
+            //åˆ¤æ–­æ˜¯å�¦ä½¿pvcé”®ï¼Œå¦‚æžœæ˜¯ï¼Œè¿›å…¥pvcæ¨¡å¼�
             frame.setVisible(false);
-            MyOXGame myoxgame=new MyOXGame();
+            OXGamePVC myoxgame=new OXGamePVC();
         }
 
     }

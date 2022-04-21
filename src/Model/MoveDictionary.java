@@ -22,7 +22,7 @@ public class MoveDictionary {
 	
 	public void win(Move move) {
 		for(Move m:movelist) {
-			if(m.getName().equals(move.getName())) {
+			if(m.getName()==move.getName()) {
 				int i =m.getProbability();
 				m.setProbability(4*i);
 			}
@@ -31,7 +31,7 @@ public class MoveDictionary {
 	
 	public void lose(Move move) {
 		for(Move m : movelist) {
-			if(m.getName().equals(move.getName())) {
+			if(m.getName()==move.getName()) {
 				int i = m.getProbability();
 				m.setProbability(i/2);
 			}
@@ -40,7 +40,7 @@ public class MoveDictionary {
 	
 	public void draw(Move move) {
 		for(Move m:movelist) {
-			if(m.getName().equals(move.getName())) {
+			if(m.getName()==move.getName()) {
 				int i =m.getProbability();
 				m.setProbability(2*i);
 			}
