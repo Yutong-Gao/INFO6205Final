@@ -16,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Chuntao Cai, NUID: 002960552
+ * To be modified
  */
 public class GameServer extends JFrame {
     private final String[] gameBoard = new String[9];
