@@ -2,8 +2,8 @@ package UI;
 
 import javax.swing.*;
 
-import Model.CheeseState;
-import Model.Move;
+import Menace.Menace;
+import Menace.Move;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,10 +19,11 @@ class OXGamePVC extends JFrame implements ActionListener {
     JPanel chessboard,basicPanel;
     int player=0;
     boolean gameOverFlag=false;
-    CheeseState cs = new CheeseState();
+    Menace cs;
     HashMap<String,Move> movelist = new HashMap<>();
 
-    OXGamePVC(){
+    OXGamePVC(Menace menace){
+    	this.cs=menace;
         setTitle("Menace Game");
         setBounds(500,500,300,300);
 

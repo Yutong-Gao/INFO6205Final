@@ -1,4 +1,4 @@
-package Model;
+package Menace;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,7 +24,7 @@ public class MoveDictionary {
 		for(Move m:movelist) {
 			if(m.getName()==move.getName()) {
 				int i =m.getProbability();
-				m.setProbability(4*i);
+				if(i*4>0) m.setProbability(i*4);
 			}
 		}
 	}
@@ -33,7 +33,7 @@ public class MoveDictionary {
 		for(Move m : movelist) {
 			if(m.getName()==move.getName()) {
 				int i = m.getProbability();
-				m.setProbability(i/2);
+				if(i/2>0) m.setProbability(i/2);
 			}
 		}
 	}
@@ -42,19 +42,20 @@ public class MoveDictionary {
 		for(Move m:movelist) {
 			if(m.getName()==move.getName()) {
 				int i =m.getProbability();
-				m.setProbability(2*i);
+				if(i*2>0) m.setProbability(i*2);
 			}
 		}
 	}
 	
 	public Move randomMove() {
-		int sum = 0;
+		int sum = 1;
 		for(Move m:movelist) {
 			sum +=m.getProbability();
 		}
 		
+		
 		Random ran = new Random();
-		int i = ran.nextInt(sum+1);
+		int i = ran.nextInt(sum);
 		for(Move m:movelist) {
 			if(i<=m.getProbability()) return m;
 			else i -= m.getProbability();
@@ -62,5 +63,12 @@ public class MoveDictionary {
 		
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return "MoveDictionary [movelist=" + movelist + "]";
+	}
+	
+	
 
 }

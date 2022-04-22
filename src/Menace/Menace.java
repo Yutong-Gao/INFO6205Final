@@ -1,8 +1,8 @@
-package Model;
+package Menace;
 
 import java.util.HashMap;
 
-public class CheeseState {
+public class Menace {
 	 /*
 	  * this class is to store the different cheese state and next move
 	  * state are presented by using string
@@ -13,10 +13,16 @@ public class CheeseState {
 	  * */
 	HashMap<String,MoveDictionary> cheeseState;
 	
-	public CheeseState() {
+	public Menace() {
 		cheeseState = new HashMap<>();
 		
 	}
+	
+	@Override
+	public String toString() {
+		return "Menace [cheeseState=" + cheeseState + "]";
+	}
+
 	
 	/* Every state are presented by a string,
 	 * for example: 000010000 means only the fifth square has 'O'
@@ -28,6 +34,7 @@ public class CheeseState {
 	 * with current state, and the return a move from MD.
 	 * 
 	 * */
+
 
 	public Move nextMove(String state) {
 		if(cheeseState.containsKey(state)) {
@@ -63,5 +70,7 @@ public class CheeseState {
 		MoveDictionary md = cheeseState.get(state);
 		md.draw(move);
 	}
+	
+	
 	
 }
