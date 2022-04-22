@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import Menace.Menace;
+import Menace.Train;
+
 
 class Inter extends JFrame implements ActionListener
 {
@@ -15,6 +18,7 @@ class Inter extends JFrame implements ActionListener
     JPanel area;//é€‰æ‹©åŒºåŸŸ
     JLabel title;
     JFrame frame;
+    Menace menace;
 
     Inter()
     {//ç•Œé�¢ç”Ÿæˆ�
@@ -40,6 +44,9 @@ class Inter extends JFrame implements ActionListener
 
         frame.setVisible(true);//è®¾ç½®å�¯è§†åŒ–
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//ä½¿å…³é—­é”®æœ‰ç”¨
+        //train the menace
+        Train train = new Train();
+        menace = train.train(100);
 
     }
 
@@ -54,7 +61,8 @@ class Inter extends JFrame implements ActionListener
         if(buttonSource==pvc){
             //åˆ¤æ–­æ˜¯å�¦ä½¿pvcé”®ï¼Œå¦‚æžœæ˜¯ï¼Œè¿›å…¥pvcæ¨¡å¼�
             frame.setVisible(false);
-            OXGamePVC myoxgame=new OXGamePVC();
+            OXGamePVC myoxgame=new OXGamePVC(menace);
+          
         }
 
     }
