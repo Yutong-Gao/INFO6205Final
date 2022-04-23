@@ -8,6 +8,7 @@ import Menace.Move;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -134,7 +135,11 @@ class OXGamePVC extends JFrame implements ActionListener {
         if(buttonSource==quit)
         {
             setVisible(false);
-            Inter inter=new Inter();
+            try {
+                Inter inter=new Inter();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (gameOverFlag==true) return;
         String buttonMark=buttonSource.getLabel();

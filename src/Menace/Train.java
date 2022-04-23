@@ -1,5 +1,8 @@
 package Menace;
 
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import HumanStrategy.Human;
@@ -14,10 +17,18 @@ public class Train {
 		
 	}
 	
-	public Menace train(int times) {
+	public Menace train(int times) throws IOException {
 		this.times = times;
-		
+		File file=new File("src/csv.txt");
+		FileOutputStream fileOutputStream=new FileOutputStream(file);
+		OutputStreamWriter dos=new OutputStreamWriter(fileOutputStream);//record training
+
 		for(int i = 0;i<times;i++) {
+			dos.write("run "+(i+1)+" times\n");
+			Date currentTime = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String dateString = formatter.format(currentTime);
+			dos.write("train time: "+dateString+"\n");
 			tic = new char[9];
 			for(int j =0;j<9;j++) tic[j]='0';
 			int countO =10;
@@ -28,28 +39,31 @@ public class Train {
 			countO--;
 			countX++;
 			//human take the first move
-			
+			dos.write("first step: "+getCheeseState()+"\n");
 			menaceMove();
 			countO--;
 			countX++;
 			// menace take the second move
+			dos.write("second step: "+getCheeseState()+"\n");
 			
 			int b = human.secondStep(tic, countO, countX, countNum);
 			countO--;
 			countX++;
 			//human take the 3rd move
-			
+			dos.write("third step: "+getCheeseState()+"\n");
 			menaceMove();
 			countO--;
 			countX++;
 			//menace take the 4th move
-			
+			dos.write("fourth step: "+getCheeseState()+"\n");
 			int c = human.thirdStep(tic, countO, countX, b);
 			countO--;
 			countX++;
 			//human take the 5th move
+			dos.write("fifth step: "+getCheeseState()+"\n");
 			if(checkWinner(0)==0) {
 				trainLose();
+				dos.write("Lose game!\n");
 				continue;
 			}
 			//check win
@@ -58,8 +72,10 @@ public class Train {
 			countO--;
 			countX++;
 			//menace take the 6th move
+			dos.write("sixth step: "+getCheeseState()+"\n");
 			if(checkWinner(1)==1) {
 				trainWin();
+				dos.write("Win game!\n");
 				continue;
 			}
 			//check win
@@ -68,8 +84,10 @@ public class Train {
 			countO--;
 			countX++;
 			//human take the 7th move
+			dos.write("seventh step: "+getCheeseState()+"\n");
 			if(checkWinner(0)==0) {
 				trainLose();
+				dos.write("Lose game!\n");
 				continue;
 			}
 			//check win
@@ -78,8 +96,10 @@ public class Train {
 			countO--;
 			countX++;
 			//menace take the 8th move
+			dos.write("eighth step: "+getCheeseState()+"\n");
 			if(checkWinner(1)==1) {
 				trainWin();
+				dos.write("Win game!\n");
 				continue;
 			}
 			//check win
@@ -88,17 +108,27 @@ public class Train {
 			countO--;
 			countX++;
 			//human take the 9th move
+			dos.write("nineth step: "+getCheeseState()+"\n");
 			if(checkWinner(0)==0) {
 				trainLose();
-				
+				dos.write("Lose game!\n");
 				continue;
 			}else if(checkWinner(0)==-1) {
 				trainDraw();
+				dos.write("Draw!\n");
 				continue;
 			}
 			//check win and draw
+
+			//dos.write("train "+i+" times");
+			//dos.write(getCheeseState());
+			//dos.close();
+
 		}
-		
+
+		dos.close();
+
+
 		return menace;
 	}
 	
@@ -133,6 +163,7 @@ public class Train {
     	for(String key:movelist.keySet()) {
     		menace.lose(key, movelist.get(key));
     	}
+
     }
     
     public void trainDraw() {
