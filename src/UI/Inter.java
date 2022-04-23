@@ -3,6 +3,7 @@ package UI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -20,8 +21,7 @@ class Inter extends JFrame implements ActionListener
     JFrame frame;
     Menace menace;
 
-    Inter()
-    {//ç•Œé�¢ç”Ÿæˆ�
+    Inter() throws IOException {//ç•Œé�¢ç”Ÿæˆ�
         frame=new JFrame();
         frame.setTitle("Menace Game");
         frame.setBounds(500,500,150,120);//çª—ä½“åŸºæœ¬è®¾ç½®
