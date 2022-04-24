@@ -15,7 +15,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author Chuntao Cai, NUID: 002960552
+ * @author Chuntao Cai
  */
 public class GameServer extends JFrame {
     private final String[] gameBoard = new String[9];//the board of the game, 9 locations to place chess
@@ -34,11 +34,11 @@ public class GameServer extends JFrame {
     private final Condition bothPlayersConnected;
     private final Condition opponentTurn;
 
-    private final JTextArea jTextArea;//show the process of the game in Server's frame
+    private JTextArea jTextArea;//show the process of the game in Server's frame
 
     public GameServer() {
         super("Tic-tac-toe Game Server");
-        for (int i = 0; i < 9; i ++){
+        for (int i = 0; i < 9; i++) {
             gameBoard[i] = "";
         }
         players = new Player[2];
@@ -60,8 +60,8 @@ public class GameServer extends JFrame {
 
         jTextArea = new JTextArea();
         add(jTextArea, BorderLayout.CENTER);//show texts in the center area of the frame
-        jTextArea.setText("Server starts.\nWaiting for players' connection.");
-        jTextArea.setFont(new Font("TimesRoman", Font.BOLD, 25));
+        jTextArea.setText("Server starts.\nWaiting for players' connection.\n");
+        jTextArea.setFont(new Font("TimesRoman", Font.BOLD, 20));
 
         setSize(450, 450);//size of the server's window
         setVisible(true);
@@ -93,8 +93,9 @@ public class GameServer extends JFrame {
         @Override
         public void run() {
             jTextArea.append("Player " + chessPiece[playerNumber] + " joined the game.\n");//show in the Server frame that someone joined the game
-            pw.println("Your Mark is " + chessPiece[playerNumber]);//tell player (in client frame) his chessPiece is O or X
+            pw.println(chessPiece[playerNumber]);//tell the player his mark
             pw.flush();
+
             //if this player is the first player(O), waiting for another one to join
             if (playerNumber == 0) {
                 pw.println("You are connected to the game.\n" + "Waiting for another player...");
@@ -102,7 +103,9 @@ public class GameServer extends JFrame {
 
                 lock.lock();
                 try {
-                    bothPlayersConnected.await();//waiting for another player to join; lock the game
+
+                        bothPlayersConnected.await();//waiting for another player to join; lock the game
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
@@ -111,7 +114,7 @@ public class GameServer extends JFrame {
 
                 pw.println("Your opponent joined the game. Your turn.");
             } else {
-                pw.println("You are the second player. Please wait for Player_O's move.");
+                pw.println("You are the second player. \nPlease wait for Player O's move.");
             }
             pw.flush();
             /*
@@ -161,6 +164,8 @@ public class GameServer extends JFrame {
                          * go ahead
                          */
                         players[currentPlayer].pw.println("Your turn.");//tell another player to go
+                        players[currentPlayer].pw.flush();
+                        players[currentPlayer].pw.println(location);
                         players[currentPlayer].pw.flush();
 
                         lock.lock();
@@ -216,15 +221,15 @@ public class GameServer extends JFrame {
         //add each player to the thread pool
         try {
             players[0] = new Player(myListener.accept(), 0);
-            players[1] = new Player(myListener.accept(), 1);
-            //put players' threads into the thread pool
             executorService.execute(players[0]);
+            players[1] = new Player(myListener.accept(), 1);
             executorService.execute(players[1]);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         lock.lock();
+
         bothPlayersConnected.signal();//signal Player_O to start
         lock.unlock();
     }
