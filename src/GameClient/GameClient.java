@@ -14,94 +14,99 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * The GameClient class tells the server this player's next move.
+ *
  * @author Chuntao Cai
  */
 public class GameClient extends JFrame implements Runnable {
-    private final String host;//server's host
+    private final String host;//server's host, used to connect the server
 
-    private final JTextField jTextField;//which shows player his mark (O or X)
-    private JTextArea jTextArea;
-    private final JPanel panel;
-    private final JPanel boardPanel;
+    private final JTextField jTextField;//show the player his mark (O or X)
+    private JTextArea jTextArea;//show the instructions to the client
+    private final JPanel panel;//the panel of the client
+    private final JPanel boardPanel;//the panel of the game
 
-    private Socket socket;
-    private Scanner sc;
-    private PrintWriter pw;
+    private Socket socket;//send connection requests to the server
+    private Scanner sc;//the input from the server
+    private PrintWriter pw;//the output to the server
 
-    private String myMark;
-    private boolean myTurn;//in fact, control the loop of the mouse
+    private String myMark;//O or X
+    private boolean myTurn;//control whether the mouse click is valid
 
-    private final Square[][] board;
+    private final Square[][] board;// 9 squares form up the board
     private Square currentSquare;
 
     private final ExecutorService executorService;
 
     public GameClient(String host) {
+        super("Tic-tac-toe Game Client");//the title of the client's window
         this.host = host;
-        jTextField = new JTextField();
-        add(jTextField, BorderLayout.NORTH);
 
-        jTextArea = new JTextArea(4, 30);
+        jTextField = new JTextField();
+        add(jTextField, BorderLayout.NORTH);//show his marks in the client
+        jTextField.setFont(new Font("TimesRoman", Font.BOLD, 30));
+        jTextArea = new JTextArea(1, 25);
         jTextArea.setFont(new Font("TimesRoman", Font.BOLD, 20));
 
-        add(jTextArea, BorderLayout.EAST);
+        add(jTextArea, BorderLayout.EAST);//show the instructions and the process of the game
 
-        panel = new JPanel();
-        add(panel, BorderLayout.CENTER);
-        boardPanel = new JPanel();
+        panel = new JPanel();//where put the boardPanel
+        add(panel);
+
+        boardPanel = new JPanel();//where put the game board
         boardPanel.setLayout(new GridLayout(3, 3, 0, 0));
+        panel.add(boardPanel);
 
-        panel.add(boardPanel, BorderLayout.CENTER);
-
+        //initialize the game board
         board = new Square[3][3];
-
-        for (int row = 0; row < board.length; row++) {
-            // loop over the columns in the board
-            for (int column = 0; column < board[row].length; column++) {
-                // create square
-                board[row][column] = new Square(" ", row * 3 + column);
-                boardPanel.add(board[row][column]); // add square
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                board[i][j] = new Square(" ", 3 * i + j);
+                boardPanel.add(board[i][j]);
             }
         }
 
-
-        setSize(800, 500);
+        setSize(800, 450);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //start the Client
         try {
-            socket = new Socket(InetAddress.getByName(host), 6000);
+            socket = new Socket(InetAddress.getByName(this.host), 6000);//connect the server
             sc = new Scanner(socket.getInputStream());
             pw = new PrintWriter(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
         executorService = Executors.newFixedThreadPool(1);
-        executorService.execute(this);
+
     }
 
     @Override
     public void run() {
-        myMark = sc.nextLine();
-        jTextField.setText("You are player " + myMark);
+        myMark = sc.nextLine();//get the mark (O or X) from the server
+        jTextField.setText("You are Player " + myMark);
         myTurn = (myMark.equals("O"));
         while (true) {
-            actionToInput(sc.nextLine());
+            actionsToInput(sc.nextLine());//process the information sent by the server
         }
     }
 
-    private void actionToInput(String input) {
+    //what the client should do when receiving information from the server
+    private void actionsToInput(String input) {
         switch (input) {
             case "Valid move.":
-                jTextArea.append("Valid move. Please wait.\n");
+                jTextArea.append("Valid move. ");
                 setMark(currentSquare, myMark);
                 break;
-            case "Wrong move, click another location.":
-                jTextArea.append("Wrong move, click another location.\n");
+            case "Please wait.":
+                jTextArea.append("Please wait.\n");
+                break;
+            case "Wrong move. Click another location.":
+                jTextArea.append("Wrong move. Click another location.\n");
                 myTurn = true;
                 break;
             case "Your turn.":
+                //modify the state of the game according to the server
                 int location = sc.nextInt();
                 int i = location / 3;
                 int j = location % 3;
@@ -109,11 +114,14 @@ public class GameClient extends JFrame implements Runnable {
                 jTextArea.append("Your turn.");
                 myTurn = true;
                 break;
-
             case "You win!":
             case "You lose.":
-            case "The game is draw.":
+            case "The game is a draw.":
                 jTextArea.append(input + "\n");
+                location = sc.nextInt();
+                i = location / 3;
+                j = location % 3;
+                setMark(board[i][j], myMark.equals("O") ? "X" : "O");
                 myTurn = false;
                 break;
             default:
@@ -124,51 +132,53 @@ public class GameClient extends JFrame implements Runnable {
 
     public void setMark(Square square, String mark) {
         square.mark = mark;
-        repaint();
+        repaint();//repaint the square with new mark (change from " " to "X" or "O")
     }
 
-    private class Square extends JPanel {
-        private String mark; // mark to be drawn in this square
+    public class Square extends JPanel {
+        private String mark;
         private final int location; // location of square
 
         public Square(String squareMark, int squareLocation) {
-            mark = squareMark; // set mark for this square
-            location = squareLocation; // set location of this square
+            mark = squareMark;
+            location = squareLocation;
 
+            //get each move by mouse click
             addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseReleased(MouseEvent e) {
-                    // set current square
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
                     currentSquare = Square.this;
                     // send location of this square to server
                     if (myTurn) {
-                        pw.println(location); // send location to server
+                        pw.println(location); // send location to the game server
                         pw.flush();
-                        myTurn = false; // not my turn any more
+                        myTurn = false;
                     }
                 }
             });
         }
 
-        // return preferred size of Square
+        // set size of each square
         @Override
         public Dimension getPreferredSize() {
-            return new Dimension(30, 30); // return preferred size
+            return new Dimension(80, 80);
         }
 
-        // return minimum size of Square
-        @Override
-        public Dimension getMinimumSize() {
-            return getPreferredSize(); // return preferred size
-        }
-
-        // draw Square
+        // draw square
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            g.drawRect(0, 0, 28, 28); // draw square
-            g.drawString(mark, 11, 20); // draw mark
+            g.drawRect(0, 0, 78, 78); // draw the shape of a square
+            g.setFont(new Font("Arial", Font.BOLD, 80));
+            g.drawString(mark, 10, 70); // draw mark
         }
     }
 
+    /**
+     * execute the client
+     */
+    public void execute() {
+        executorService.execute(this);
+    }
 }

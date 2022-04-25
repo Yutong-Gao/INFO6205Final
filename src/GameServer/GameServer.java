@@ -15,6 +15,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
+ * I designed a server that can link with two clients on the same computer
+ * and provide services for a tic-tac-toe game.
+ *
+ * The GameServer class can tell each client the state of the game
+ * and what to do next.
+ *
  * @author Chuntao Cai
  */
 public class GameServer extends JFrame {
@@ -24,12 +30,13 @@ public class GameServer extends JFrame {
     private ServerSocket myListener;//waiting for requests from clients (i.e. players) to come in over the network
 
     private int currentPlayer;//can be changed between player0 & playerX (i.e. 0 or 1)
-    private final int PlayerO = 0;
-    private final int PlayerX = 1;
+    private final int PlayerO = 0;//Player O = 0, Player X = 1
+
     private final String[] chessPiece = {"O", "X"}; //two kinds of chess Piece
     private final ExecutorService executorService;//execute a thread pool where players can run
 
     private final Lock lock;//a game lock controlling access to the game by multiple threads
+
     //different conditions to control the lock
     private final Condition bothPlayersConnected;
     private final Condition opponentTurn;
@@ -37,19 +44,19 @@ public class GameServer extends JFrame {
     private JTextArea jTextArea;//show the process of the game in Server's frame
 
     public GameServer() {
-        super("Tic-tac-toe Game Server");
+        super("Tic-tac-toe Game Server");//the title of the server's window
         for (int i = 0; i < 9; i++) {
-            gameBoard[i] = "";
+            gameBoard[i] = "";//initialize the game board
         }
         players = new Player[2];
 
         try {
-            myListener = new ServerSocket(6000, 2);
+            myListener = new ServerSocket(6000, 2);//limit the number of threads to 2
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        currentPlayer = PlayerO;//set PlayerO (O) as the first player
+        currentPlayer = PlayerO;//set Player O as the first player
 
         executorService = Executors.newFixedThreadPool(2);//2 players, 2 threads
 
@@ -61,7 +68,7 @@ public class GameServer extends JFrame {
         jTextArea = new JTextArea();
         add(jTextArea, BorderLayout.CENTER);//show texts in the center area of the frame
         jTextArea.setText("Server starts.\nWaiting for players' connection.\n");
-        jTextArea.setFont(new Font("TimesRoman", Font.BOLD, 20));
+        jTextArea.setFont(new Font("TimesRoman", Font.BOLD, 20));//modify font format
 
         setSize(450, 450);//size of the server's window
         setVisible(true);
@@ -92,7 +99,7 @@ public class GameServer extends JFrame {
 
         @Override
         public void run() {
-            jTextArea.append("Player " + chessPiece[playerNumber] + " joined the game.\n");//show in the Server frame that someone joined the game
+            jTextArea.append("Player " + chessPiece[playerNumber] + " joined the game.\n");//show in the server that someone joined the game
             pw.println(chessPiece[playerNumber]);//tell the player his mark
             pw.flush();
 
@@ -104,7 +111,7 @@ public class GameServer extends JFrame {
                 lock.lock();
                 try {
 
-                        bothPlayersConnected.await();//waiting for another player to join; lock the game
+                    bothPlayersConnected.await();//waiting for another player to join; lock the game
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -136,7 +143,7 @@ public class GameServer extends JFrame {
                     }
                 }
                 /*
-                 * Player's turn now.
+                 * This player's turn now.
                  */
                 if (!isOccupied(location)) {
                     gameBoard[location] = chessPiece[playerNumber];//place chessPiece
@@ -154,15 +161,23 @@ public class GameServer extends JFrame {
                         pw.flush();
                         players[currentPlayer].pw.println("You lose.");
                         players[currentPlayer].pw.flush();
-                    } else if (isFull()) {
-                        pw.println("The game is draw.");
-                        pw.flush();
-                        players[currentPlayer].pw.println("The game is draw.");
+                        players[currentPlayer].pw.println(location);
                         players[currentPlayer].pw.flush();
+                        jTextArea.append("Player " + chessPiece[playerNumber] + " wins the game.");
+                    } else if (isFull()) {
+                        pw.println("The game is a draw.");
+                        pw.flush();
+                        players[currentPlayer].pw.println("The game is a draw.");
+                        players[currentPlayer].pw.flush();
+                        players[currentPlayer].pw.println(location);
+                        players[currentPlayer].pw.flush();
+                        jTextArea.append("The game is a draw.");
                     } else {
                         /*
                          * go ahead
                          */
+                        pw.println("Please wait.");
+                        pw.flush();
                         players[currentPlayer].pw.println("Your turn.");//tell another player to go
                         players[currentPlayer].pw.flush();
                         players[currentPlayer].pw.println(location);
@@ -173,13 +188,13 @@ public class GameServer extends JFrame {
                         lock.unlock();
                     }
                 } else {
-                    pw.println("Wrong move, click another location.");//tell the player to choose another location
+                    pw.println("Wrong move. Click another location.");//tell the client to choose another location
                     pw.flush();
                 }
             }
             /*
              * Game Over.
-             * Close socket.
+             * Close the socket.
              */
             try {
                 LinkSocket.close();
@@ -189,10 +204,12 @@ public class GameServer extends JFrame {
         }
     }
 
+    //determine whether the game is over
     public boolean isGameOver() {
         return hasWinner() || isFull();
     }
 
+    //judge if someone has won the game
     public boolean hasWinner() {
         return (!gameBoard[0].isEmpty() && gameBoard[0].equals(gameBoard[1]) && gameBoard[0].equals(gameBoard[2]))
                 || (!gameBoard[3].isEmpty() && gameBoard[3].equals(gameBoard[4]) && gameBoard[3].equals(gameBoard[5]))
@@ -204,6 +221,7 @@ public class GameServer extends JFrame {
                 || (!gameBoard[2].isEmpty() && gameBoard[2].equals(gameBoard[4]) && gameBoard[2].equals(gameBoard[6]));
     }
 
+    //judge if the board is full
     public boolean isFull() {
         for (String s : gameBoard) {
             if (s.isEmpty()) {
@@ -213,12 +231,13 @@ public class GameServer extends JFrame {
         return true;
     }
 
+    //judge if the move is valid
     public boolean isOccupied(int location) {
         return !gameBoard[location].equals("");
     }
 
     public void execute() {
-        //add each player to the thread pool
+        //add both players to the thread pool
         try {
             players[0] = new Player(myListener.accept(), 0);
             executorService.execute(players[0]);
@@ -230,7 +249,7 @@ public class GameServer extends JFrame {
 
         lock.lock();
 
-        bothPlayersConnected.signal();//signal Player_O to start
+        bothPlayersConnected.signal();//signal Player O to start
         lock.unlock();
     }
 }
