@@ -14,47 +14,86 @@ import HumanStrategy.RandomHuman;
 public class TrainRandom {
 	char[] tic;
 	int times;
-	Menace menace = new Menace();
+	Menace menace;
 	RandomHuman human = new RandomHuman();
 	HashMap<String,Move> movelist;
-	int win=0;
-	int lose=0;
-	int draw=0;
+	int player;
 	public TrainRandom() {
 		
 	}
 	
-	public Menace train(int times) throws IOException {
+	public Menace train(Menace menace,int times,int player){
+		//when player = 0, menace take the first move; when player =1, human take the first move
 		this.times = times;
-		File file=new File("src/trainResult.txt");
+		this.menace = menace;
+		for(int i = 0;i<times;i++) {
+			this.player=player;
+			tic = new char[9];
+			for(int j =0;j<9;j++) tic[j]='0';
+			movelist = new HashMap<>();
+			while(checkWinner(player)==-2) {
+				nextStep(player,menace);
+				player = (player+1)%2;
+			}
+			int winner = checkWinner(player);
+			if(winner==-1) {
+				trainDraw(menace);
+			}
+			else if(winner==1) {
+				trainWin(menace);
+			} 
+			else {
+				 trainLose(menace);
+			}			
+			
+		}
+		return menace;
+	}
+	
+	public Menace trainRecord(int times,Menace menace,int player) throws IOException {
+		this.times = times;
+		this.menace = menace;
+		File file;
+		if(player==0) {
+			file=new File("src/trainResult_menacefirst.txt");
+		}else {
+			file = new File("src/trainResult_humanfirst.txt");
+		}
+		
 		FileOutputStream fileOutputStream=new FileOutputStream(file);
 		OutputStreamWriter dos=new OutputStreamWriter(fileOutputStream);//record training
+		int win = 0;
+		int lose = 0;
+		int draw = 0;
 		for(int i = 0;i<times;i++) {
 			dos.write("\n\nrun "+(i+1)+" times\n");
 			Date currentTime = new Date();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String dateString = formatter.format(currentTime);
 			dos.write("train time: "+dateString+"\n");
-			int player =0;
+			this.player=player;
 			tic = new char[9];
 			for(int j =0;j<9;j++) tic[j]='0';
 			movelist = new HashMap<>();
 			while(checkWinner(player)==-2) {
-				nextStep(player);
+				nextStep(player,menace);
 				dos.write(getCheeseState()+"\n");
 				player = (player+1)%2;
 			}
 			int winner = checkWinner(player);
 			if(winner==-1) {
-				trainDraw();
+				trainDraw(menace);
+				draw +=1;
 				dos.write("Draw!");
 			}
-			else if(winner==0) {
-				trainWin();
+			else if(winner==1) {
+				trainWin(menace);
+				win +=1;
 				dos.write("Win!");
 			} 
 			else {
-				 trainLose();
+				 trainLose(menace);
+				 lose +=1;
 				 dos.write("Lose!");
 			}			
 			
@@ -64,12 +103,12 @@ public class TrainRandom {
 		return menace;
 	}
 	
-	public void nextStep(int player) {
-		if(player==0) humanMove();
-		if(player==1) menaceMove();
+	public void nextStep(int player,Menace menace) {
+		if(player==1) humanMove();
+		if(player==0) menaceMove(menace);
 	}
 	
-	public void menaceMove() {
+	public void menaceMove(Menace menace) {
 		String state = getCheeseState();
 		Move move =menace.nextMove(state);
 		tic[move.getName()-1]='X';
@@ -93,28 +132,25 @@ public class TrainRandom {
         return state;
     }
     
-    public void trainWin() {
+    public void trainWin(Menace menace) {
     	//train the machine
     	for(String key:movelist.keySet()) {
     		menace.win(key, movelist.get(key));
     	}
-    	win +=1;
     }
     
-    public void trainLose() {
+    public void trainLose(Menace menace) {
     	//train the machine
     	for(String key:movelist.keySet()) {
     		menace.lose(key, movelist.get(key));
     	}
-    	lose +=1;
     }
     
-    public void trainDraw() {
+    public void trainDraw(Menace menace) {
     	//train the machine
     	for(String key:movelist.keySet()) {
     		menace.draw(key, movelist.get(key));
     	}
-    	draw +=1;
     }
     
     public int checkWinner(int playerNow) {

@@ -10,7 +10,7 @@ public class RandomHuman {
 		else {
 			Random random = new Random();
 			int index = random.nextInt(9);
-			while(tic[index]==0){
+			while(tic[index]!='0'){
 				index = random.nextInt(9);
 			}
 			return index;
@@ -51,7 +51,7 @@ public class RandomHuman {
 		if(tic[2]==tic[4]&&tic[4]!='0'&&tic[6]=='0') return 6;
 		if(tic[2]==tic[6]&&tic[6]!='0'&&tic[4]=='0') return 4;
 		if(tic[6]==tic[4]&&tic[4]!='0'&&tic[2]=='0') return 2;
-		//check second column
+		//check second diagonal
 		
 		return -1;
 	}

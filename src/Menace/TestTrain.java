@@ -10,8 +10,13 @@ public class TestTrain {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		TrainRandom train = new TrainRandom();
-		Menace menace =train.train(10000);
+		TrainRandom trainRandom = new TrainRandom();
+		Train train = new Train();
+		Menace menacetrained =trainRandom.trainRecord(1000000,new Menace(),0);
+		Menace menacetrained2 = trainRandom.trainRecord(1000000, new Menace(), 1);
+		//Menace menace = train.trainRecord(10000, menacetrained);
+		
+		
 
 	}
 
