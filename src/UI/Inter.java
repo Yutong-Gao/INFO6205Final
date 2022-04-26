@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import Menace.Menace;
 import Menace.Train;
+import Menace.TrainRandom;
 
 
 class Inter extends JFrame implements ActionListener
@@ -45,8 +46,8 @@ class Inter extends JFrame implements ActionListener
         frame.setVisible(true);//set frame visible
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//make frame close
         //train the menace
-        Train train = new Train();
-        menace = train.train(100);
+        TrainRandom train = new TrainRandom();
+        menace = train.train(1000000);
 
     }
 
