@@ -45,9 +45,7 @@ class Inter extends JFrame implements ActionListener
 
         frame.setVisible(true);//set frame visible
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//make frame close
-        //train the menace
-        TrainRandom train = new TrainRandom();
-        menace = train.train(1000000);
+        
 
     }
 
@@ -62,6 +60,14 @@ class Inter extends JFrame implements ActionListener
         if(buttonSource==pvc){
             //when choose person vs computer, call pvc interface
             frame.setVisible(false);
+            //train menace
+            TrainRandom train = new TrainRandom();
+            try {
+				menace = train.train(1000000);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             OXGamePVC myoxgame=new OXGamePVC(menace);
           
         }
