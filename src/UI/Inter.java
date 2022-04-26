@@ -63,7 +63,7 @@ class Inter extends JFrame implements ActionListener
             //train menace
             TrainRandom train = new TrainRandom();
             try {
-				menace = train.train(1000000);
+				menace = train.trainRecord(1000000,new Menace(),0);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
