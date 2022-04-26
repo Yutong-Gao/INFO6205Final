@@ -11,7 +11,7 @@ public class TestTrain {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		TrainRandom train = new TrainRandom();
-		Menace menace =train.train(3);
+		Menace menace =train.train(10000);
 
 	}
 
