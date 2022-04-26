@@ -55,7 +55,7 @@ public class TrainRandom {
 			} 
 			else {
 				 trainLose();
-				 dos.write("lose!");
+				 dos.write("Lose!");
 			}			
 			
 		}
