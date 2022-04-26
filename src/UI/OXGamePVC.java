@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class OXGamePVC extends JFrame implements ActionListener {
+class OXGamePVC extends JFrame implements ActionListener {//pvc
     JButton[] button;
     JButton restart;
     JButton quit;
