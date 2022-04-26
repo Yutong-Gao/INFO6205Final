@@ -13,18 +13,18 @@ import Menace.Train;
 
 class Inter extends JFrame implements ActionListener
 {
-    //å¼€å±€é€‰æ‹©ç•Œé�¢
-    JButton pvc;//ä¸¤ç§�æ¨¡å¼�é€‰æ‹©
+
+    JButton pvc;//two choose, person vs computer and person vs person
     JButton pvp;
-    JPanel area;//é€‰æ‹©åŒºåŸŸ
+    JPanel area;//area
     JLabel title;
     JFrame frame;
     Menace menace;
 
-    Inter() throws IOException {//ç•Œé�¢ç”Ÿæˆ�
+    Inter() throws IOException {//Initial interface
         frame=new JFrame();
         frame.setTitle("Menace Game");
-        frame.setBounds(500,500,150,120);//çª—ä½“åŸºæœ¬è®¾ç½®
+        frame.setBounds(500,500,150,120);//set size
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -42,8 +42,8 @@ class Inter extends JFrame implements ActionListener
         pvp.addActionListener(this);
         frame.add(area);
 
-        frame.setVisible(true);//è®¾ç½®å�¯è§†åŒ–
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//ä½¿å…³é—­é”®æœ‰ç”¨
+        frame.setVisible(true);//set frame visible
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//make frame close
         //train the menace
         Train train = new Train();
         menace = train.train(100);
@@ -54,12 +54,12 @@ class Inter extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent e) {
         JButton buttonSource=(JButton)e.getSource();
         if(buttonSource==pvp){
-            //åˆ¤æ–­æ˜¯å�¦ä½¿pvpé”®ï¼Œå¦‚æžœæ˜¯ï¼Œè¿›å…¥pvpæ¨¡å¼�
+            //when choose person vs person, call pvp interface
             frame.setVisible(false);
             MyOXGame myoxgame=new MyOXGame();
         }
         if(buttonSource==pvc){
-            //åˆ¤æ–­æ˜¯å�¦ä½¿pvcé”®ï¼Œå¦‚æžœæ˜¯ï¼Œè¿›å…¥pvcæ¨¡å¼�
+            //when choose person vs computer, call pvc interface
             frame.setVisible(false);
             OXGamePVC myoxgame=new OXGamePVC(menace);
           
