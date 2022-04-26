@@ -44,7 +44,7 @@ public class TrainRandom {
 				dos.write(getCheeseState()+"\n");
 				player = (player+1)%2;
 			}
-			int winner = checkWinner(1);
+			int winner = checkWinner(player);
 			if(winner==-1) {
 				trainDraw();
 				dos.write("Draw!");
@@ -59,7 +59,7 @@ public class TrainRandom {
 			}			
 			
 		}
-		dos.write("\nTOTAL:"+times+" Win:"+win+" Draw:"+draw+" Lose:"+lose);
+		dos.write("\n\nTOTAL:"+times+" Win:"+win+" Draw:"+draw+" Lose:"+lose);
 		dos.close();
 		return menace;
 	}
