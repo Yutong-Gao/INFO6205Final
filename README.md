@@ -1,5 +1,5 @@
 # INFO6205Final
-AI based tic-tac-toe game machine.
+1.AI based tic-tac-toe game machine.\n
 PVC: Run Start.java to play game with computer.
 PVP: Run Start.java to play game with another player or run GameServerDemo to open game server and run GameClientDemo twice to to play with another player.
 Machine is trained automatically every time running pvc.
